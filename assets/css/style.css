@@ -1,0 +1,11 @@
+.main {
+    display: inline-block;
+    text-align: center;
+    margin-top: 15%;
+    margin-left: 30%;
+    padding: 20px;
+
+}
+#timer {
+    float: right;
+}
