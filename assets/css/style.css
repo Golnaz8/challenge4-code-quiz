@@ -9,3 +9,6 @@
 #timer {
     float: right;
 }
+.askQuestion {
+    display: none;
+}
