@@ -12,3 +12,13 @@
 .askQuestion {
     display: none;
 }
+h3 {
+    display: block;
+    margin:10px;
+    margin-left: 25%;
+}
+.choice {
+    display: block;
+    margin:10px;
+    margin-left: 25%;
+}
