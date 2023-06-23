@@ -1,7 +1,6 @@
 var startEl = document.querySelector("#start");
 var mainEl = document.querySelector(".main");
 var timerEl = document.querySelector("#timer");
-var askQuestionEl = document.querySelector(".askQuestion");
 var buttonEl = document.querySelector("#button-container");
 var quesEl = document.querySelector("#ques");
 var chOneEl =document.querySelector("#choice-one");
@@ -9,6 +8,9 @@ var chTwoEl = document.querySelector("#choice-two");
 var chThreeEl = document.querySelector("#choice-three");
 var chFourEl = document.querySelector("#choice-four");
 var alertEl = document.querySelector("#alert");
+var doneEl = document.querySelector("#done-page");
+var scoreEl = document.querySelector("#user-score");
+var initialEl = document.querySelector("#user-initial");
 
 
 var score = 0;
@@ -46,7 +48,7 @@ var questions = [
 ]
 
 function makeQuestions(number) {
-    askQuestionEl.setAttribute("style", "display: block;")
+    buttonEl.setAttribute("style", "display: block;")
     quesEl.textContent = `${number+1} ) ${questions[number].question}`;
     quesEl.setAttribute("style", "display: inline-block;text-align: center; margin-top:15%; margin-left: 25%;");
     chOneEl.textContent = `A) ${questions[number].tests[0]}`;
@@ -57,7 +59,11 @@ function makeQuestions(number) {
 
 buttonEl.addEventListener("click", (event)=> {
     var answerChoice = event.target;
-    console.log(answerChoice);
+    if (answerChoice.matches("button")) {
+        console.log(answerChoice);
+    }else {
+        return;
+    }
         
     if (answerChoice === questions[num].answer){
         correctAnswer();
@@ -70,21 +76,36 @@ buttonEl.addEventListener("click", (event)=> {
 });
  
 function correctAnswer() {
-    alertEl.textContent = "Correct"
-    alertEl.setAttribute("style", "color: green;");
-    score += 1;
+    alertTimerC();
+    score += 5;
     nextQuestion();
     return score;
 }
 
+function alertTimerC() {
+    alertEl.textContent = "Correct";
+    alertEl.setAttribute("style", "color: green;");
+    setTimeout(function() {
+        alertEl.setAttribute("style", "display: none;");
+      }, 1500);
+}
+
 function incorrectAnswer() {
-    alertEl.textContent = "Incorrect"
-    alertEl.setAttribute("style", "color: red;");
+    alertTimerI();
     var penaltyTime = 5;
     secondsLeft -= penaltyTime;
-    updateTimer();
     nextQuestion();
+    updateTimer();
 }
+
+function alertTimerI() {
+    alertEl.textContent = "Incorrect"
+    alertEl.setAttribute("style", "color: red;");
+    setTimeout(function() {
+        alertEl.setAttribute("style", "display: none;");
+      }, 1500);
+}
+
 function updateTimer() {
     var timerDisplay = document.getElementById("timer");
     timerDisplay.innerText = `${secondsLeft} seconds left`;
@@ -98,7 +119,18 @@ function firstQ(){
 
 function nextQuestion() {
     num = num +1;
+    if (num > questions.length-1){
+        endOfQuiz();
+        clearInterval(timerInterval);
+    }
     makeQuestions(num);
+}
+
+function endOfQuiz() {
+    buttonEl.setAttribute("style", "display: none;");
+
+    doneEl.setAttribute("style", "display: inline-block;");
+    scoreEl.textContent= `Your final score is: ${score}.`;
 }
  
 function setTime() {
@@ -108,6 +140,7 @@ function setTime() {
       timerEl.setAttribute("style", "float: right;");
 
       if(secondsLeft === 0) {
+        endOfQuiz();
         clearInterval(timerInterval);
       }
     }, 1000);

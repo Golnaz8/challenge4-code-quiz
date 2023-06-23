@@ -1,24 +1,43 @@
 .main {
     display: inline-block;
     text-align: center;
-    margin-top: 15%;
+    margin-top: 10%;
     margin-left: 30%;
     padding: 20px;
+}
 
+.nav {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
 }
+
 #timer {
-    float: right;
+    display: block;
+    right: 0; 
 }
-.askQuestion {
+
+#button-container {
     display: none;
 }
-h3 {
-    display: block;
-    margin:10px;
+
+#alert {
+    display: inline-block;
     margin-left: 25%;
 }
+
 .choice {
     display: block;
     margin:10px;
     margin-left: 25%;
 }
+
+#done-page {
+    display: none;
+    text-align: left;
+    margin-top: 15%;
+    margin-left: 25%;
+    padding-top: 20px;
+}
+
+
