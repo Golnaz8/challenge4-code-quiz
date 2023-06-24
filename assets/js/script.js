@@ -10,7 +10,8 @@ var chFourEl = document.querySelector("#choice-four");
 var alertEl = document.querySelector("#alert");
 var doneEl = document.querySelector("#done-page");
 var scoreEl = document.querySelector("#user-score");
-var initialEl = document.querySelector("#user-initial");
+var submitEl = document.querySelector("#submit");
+var addScoreEl = document.querySelector("#add-score");
 
 
 var score = 0;
@@ -87,12 +88,12 @@ function alertTimerC() {
     alertEl.setAttribute("style", "color: green;");
     setTimeout(function() {
         alertEl.setAttribute("style", "display: none;");
-      }, 1500);
+      }, 1000);
 }
 
 function incorrectAnswer() {
     alertTimerI();
-    var penaltyTime = 5;
+    var penaltyTime = 15;
     secondsLeft -= penaltyTime;
     nextQuestion();
     updateTimer();
@@ -103,7 +104,7 @@ function alertTimerI() {
     alertEl.setAttribute("style", "color: red;");
     setTimeout(function() {
         alertEl.setAttribute("style", "display: none;");
-      }, 1500);
+      }, 1000);
 }
 
 function updateTimer() {
@@ -121,29 +122,71 @@ function nextQuestion() {
     num = num +1;
     if (num > questions.length-1){
         endOfQuiz();
-        clearInterval(timerInterval);
+    }else{
+        makeQuestions(num);
     }
-    makeQuestions(num);
 }
 
 function endOfQuiz() {
     buttonEl.setAttribute("style", "display: none;");
-
     doneEl.setAttribute("style", "display: inline-block;");
     scoreEl.textContent= `Your final score is: ${score}.`;
 }
- 
+
+function saveResult(userInitial,userScore) {
+    var existingValues = JSON.parse(localStorage.getItem('allScores')) || [];
+    existingValues.push({userInitial,userScore});
+    existingValues.sort((a, b) => b.userScore - a.userScore);
+    console.log(existingValues);
+    localStorage.setItem('allScores', JSON.stringify(existingValues));
+
+}
+
+function fiveHighScores(userInitial,userScore){
+    var fiveLastHighScores = JSON.parse(localStorage.getItem('allScores')) || [];
+    fiveLastHighScores.push({userInitial,userScore});
+    fiveLastHighScores.sort((a, b) => b.userScore - a.userScore);
+    if (fiveLastHighScores.length>5) {
+    var slicedHigh= fiveLastHighScores.slice(0 , 5);
+    localStorage.setItem('highScores', JSON.stringify(slicedHigh));
+    console.log(slicedHigh);
+    }else{
+        localStorage.setItem('highScores', JSON.stringify(fiveLastHighScores));
+    }
+}
+
 function setTime() {
     var timerInterval = setInterval(function() {
       secondsLeft--;
       timerEl.textContent = `${secondsLeft} seconds left`;
       timerEl.setAttribute("style", "float: right;");
 
-      if(secondsLeft === 0) {
+      if(secondsLeft === 0 || num > questions.length-1) {
         endOfQuiz();
         clearInterval(timerInterval);
       }
     }, 1000);
 }
+
+
+submitEl.addEventListener("click", function(event) {
+    event.preventDefault();
+
+
+    var quizResult=
+    {
+        userInitial: document.querySelector("#user-initial").value,
+        userScore: score
+    }
+    
   
+    if (quizResult.userInitial === "") {
+      window.alert("Please enter initials before submit.");
+    } else {
+       saveResult(quizResult.userInitial,quizResult.userScore);
+       fiveHighScores(quizResult.userInitial,quizResult.userScore);
+    }
+});
+
+
 startEl.addEventListener("click",firstQ);
