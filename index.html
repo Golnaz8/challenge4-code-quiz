@@ -8,17 +8,20 @@
 </head>
 
 <body>
-    <div class="nav">
-        <a href="./viewscores.html" alt="link of view high scores" id="scores-link">view higher scores</a>
-        <section id="timer">Timer</section>
-    </div>
-    
-    <section class="main">
-        <h1>Code Quiz</h1>
-        <h2>You have 75 seconds to answer 5 questions.</h3>
-        <p>If you answer wrong, for each question, the timer will subtracted 5 seconds.</p>
-        <button id="start">start</button>
+    <section id="wrapper">
+        <div class="nav">
+            <a href="#" alt="link of view high scores" id="scores-link">view higher scores</a>
+            <section id="timer">Timer</section>
+        </div>
+        
+        <section class="main">
+            <h1>Coding Quiz Challenge</h1>
+            <h3>You have 75 seconds to answer 5 questions.</h3>
+            <p>If you answer wrong, for each question, the timer will subtracted 15 seconds.</p>
+            <button id="start">start quiz</button>
+        </section>
     </section>
+
 
     <section>
         <div id="button-container">
@@ -45,6 +48,15 @@
     <div>
         <h3 id="alert"></h3>
     </div>
+
+    <section class="style">
+        <h1>High scores:</h1>
+        <ol id="add-score"></ol>
+        <div>
+            <button id="back-btn">Go Back</button>
+            <button id="clear-btn">Clear high scores</button>
+        </div>
+    </section>
     
 <script src="./assets/js/script.js"></script>
 </body>

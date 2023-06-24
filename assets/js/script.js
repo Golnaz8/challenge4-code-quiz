@@ -1,3 +1,4 @@
+var wrapperEl = document.querySelector("#wrapper");
 var startEl = document.querySelector("#start");
 var mainEl = document.querySelector(".main");
 var timerEl = document.querySelector("#timer");
@@ -12,6 +13,9 @@ var doneEl = document.querySelector("#done-page");
 var scoreEl = document.querySelector("#user-score");
 var submitEl = document.querySelector("#submit");
 var addScoreEl = document.querySelector("#add-score");
+var backBtnEl = document.querySelector("#back-btn");
+var clearBtnEl = document.querySelector("#clear-btn");
+var styleEl = document.querySelector(".style");
 
 
 var score = 0;
@@ -143,16 +147,30 @@ function saveResult(userInitial,userScore) {
 }
 
 function fiveHighScores(userInitial,userScore){
-    var fiveLastHighScores = JSON.parse(localStorage.getItem('allScores')) || [];
+    var fiveLastHighScores = JSON.parse(localStorage.getItem('highScores')) || [];
     fiveLastHighScores.push({userInitial,userScore});
     fiveLastHighScores.sort((a, b) => b.userScore - a.userScore);
     if (fiveLastHighScores.length>5) {
     var slicedHigh= fiveLastHighScores.slice(0 , 5);
+
     localStorage.setItem('highScores', JSON.stringify(slicedHigh));
     console.log(slicedHigh);
+
+    for (i=0; i<5; i++) {
+        var liEl = document.createElement("li");
+        liEl.textContent = slicedHigh[i].userInitial +" : "+ slicedHigh[i].userScore;
+        addScoreEl.appendChild(liEl);
+    }
     }else{
         localStorage.setItem('highScores', JSON.stringify(fiveLastHighScores));
+
+        for (i=0; i<fiveLastHighScores.length; i++){
+            var liEl = document.createElement("li");
+            liEl.textContent = fiveLastHighScores[i].userInitial +" : "+ fiveLastHighScores[i].userScore;
+            addScoreEl.appendChild(liEl);
+        }
     }
+   
 }
 
 function setTime() {
@@ -186,7 +204,14 @@ submitEl.addEventListener("click", function(event) {
        saveResult(quizResult.userInitial,quizResult.userScore);
        fiveHighScores(quizResult.userInitial,quizResult.userScore);
     }
+    highScoresPage();
 });
+
+function highScoresPage() {
+    wrapperEl.setAttribute("style", "display: none;");
+    doneEl.setAttribute("style", "display: none;");
+    styleEl.setAttribute("style", "display: block;");
+}
 
 
 startEl.addEventListener("click",firstQ);
