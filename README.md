@@ -27,15 +27,14 @@ THEN I can save my initials and my score
 ```
 
 ## Mock-Up
-The following screenshot demonstrates the application appearance:
 
+The following screenshot demonstrates the application appearance:
+![image](https://github.com/Golnaz8/challenge4-code-quiz-web-APIs/assets/133593128/61cb6769-5309-4e11-8d37-fe2f3cd8dade)
 
 
 
 ## Git hub pages link
 
 https://golnaz8.github.io/challenge4-code-quiz-web-APIs/
-
-
 
 © 2023 edX Boot Camps LLC. Confidential and Proprietary. All Rights Reserved.
