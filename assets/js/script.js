@@ -55,6 +55,7 @@ var questions = [
 
 ]
 
+//each time display one object of the questions array 
 function makeQuestions(number) {
     buttonEl.setAttribute("style", "display: block;")
     quesEl.textContent = `${number+1} ) ${questions[number].question}`;
@@ -65,6 +66,7 @@ function makeQuestions(number) {
     chFourEl.textContent = `D) ${questions[number].tests[3]}`;
 }
 
+//each answer button is clicked, it checks with the right answer  
 buttonEl.addEventListener("click", (event)=> {
     var answerChoice = event.target;
     if (answerChoice.matches("button")) {
@@ -83,6 +85,7 @@ buttonEl.addEventListener("click", (event)=> {
     }
 });
  
+//if user click on right answer, it scores and goes to next question
 function correctAnswer() {
     alertTimerC();
     score += 5;
@@ -90,6 +93,7 @@ function correctAnswer() {
     return score;
 }
 
+//for correct answer, it displays Correct for one second
 function alertTimerC() {
     alertEl.textContent = "Correct";
     alertEl.setAttribute("style", "color: green;");
@@ -98,6 +102,7 @@ function alertTimerC() {
       }, 1000);
 }
 
+//if user click on wrong answer, it subtracts 15 seconds and goes to next question
 function incorrectAnswer() {
     alertTimerI();
     var penaltyTime = 15;
@@ -111,6 +116,7 @@ function incorrectAnswer() {
     timerEl.innerText = `${secondsLeft} seconds left`;
 }
 
+//for wrong answer, it displays Incorrect for one second
 function alertTimerI() {
     alertEl.textContent = "Incorrect"
     alertEl.setAttribute("style", "color: red;");
@@ -119,12 +125,14 @@ function alertTimerI() {
       }, 1000);
 }
 
+//this function displays first question and start the timer
 function firstQ(){
     mainEl.setAttribute("style", "display: none;");
     setTime();
     makeQuestions(num);
 }
 
+//if still we have questions, it calls makeQuestions to display next question
 function nextQuestion() {
     num = num +1;
     if (num > questions.length-1){
@@ -134,6 +142,7 @@ function nextQuestion() {
     }
 }
 
+//when the time is over or all questions are displayed, it shows the score page and ask for initials
 function endOfQuiz() {
     buttonEl.setAttribute("style", "display: none;");
     doneEl.setAttribute("style", "display: inline-block;");
@@ -142,6 +151,7 @@ function endOfQuiz() {
     secondsLeft= 0;
 }
 
+//uses local storage to save the result and sort them
 function saveResult(userInitial,userScore) {
     var existingValues = JSON.parse(localStorage.getItem('allScores')) || [];
     existingValues.push({userInitial,userScore});
@@ -150,6 +160,7 @@ function saveResult(userInitial,userScore) {
     localStorage.setItem('allScores', JSON.stringify(existingValues));
 }
 
+//displays five higher score. uses local storage to save and sort
 function fiveHighScores(userInitial,userScore){
     clearHighScoresPage();
     var fiveLastHighScores = JSON.parse(localStorage.getItem('highScores')) || [];
@@ -160,7 +171,7 @@ function fiveHighScores(userInitial,userScore){
     localStorage.setItem('highScores', JSON.stringify(slicedHigh));
     console.log(slicedHigh);
 
-
+    //create li elements to display initials and scores
     for (i=0; i<5; i++) {
         var liEl = document.createElement("li");
         liEl.textContent = slicedHigh[i].userInitial +" : "+ slicedHigh[i].userScore;
@@ -177,12 +188,14 @@ function fiveHighScores(userInitial,userScore){
     }
 }
 
+//set the timer and displays how many seconds left
 function setTime() {
     var timerInterval = setInterval(function() {
       secondsLeft--;
       timerEl.textContent = `${secondsLeft} seconds left`;
       timerEl.setAttribute("style", "float: right;");
-
+      
+      //it checks if the time is over or all questions are displayed, calls endOfQuiz function and stop the timer
       if(secondsLeft === 0 || num > questions.length-1) {
         endOfQuiz();
         clearInterval(timerInterval);
@@ -196,6 +209,7 @@ function setTime() {
     }, 1000);
 }
 
+//submits score and initials. calls other functions to save result and show upto five higher scores.
 var submitScore = function(event) {
     event.preventDefault();
 
@@ -219,12 +233,14 @@ var submitScore = function(event) {
     highScoresPage();
 }
 
+//displays higher scores page
 function highScoresPage() {
     wrapperEl.setAttribute("style", "display: none;");
     doneEl.setAttribute("style", "display: none;");
     styleEl.setAttribute("style", "display: block;");
 }
 
+//resets score and timer, hides current page and displays main first page
 function goBack() {
     styleEl.setAttribute("style", "display: none;");
     wrapperEl.setAttribute("style", "display: block;");
@@ -235,6 +251,7 @@ function goBack() {
     timerEl.textContent= `Timer`;
 }
 
+//this function clears all li elements which are children of addScoreEl
 function clearHighScoresPage() {
     var childNodes = addScoreEl.childNodes;
 
@@ -244,6 +261,7 @@ function clearHighScoresPage() {
     }
 }
 
+//event listeners
 startEl.addEventListener("click",firstQ);
 submitEl.addEventListener("click",submitScore); 
 backBtnEl.addEventListener("click",goBack);
