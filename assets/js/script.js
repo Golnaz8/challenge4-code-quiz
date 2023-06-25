@@ -1,4 +1,5 @@
 var wrapperEl = document.querySelector("#wrapper");
+var navEl = document.querySelector(".nav");
 var startEl = document.querySelector("#start");
 var mainEl = document.querySelector(".main");
 var timerEl = document.querySelector("#timer");
@@ -16,6 +17,8 @@ var addScoreEl = document.querySelector("#add-score");
 var backBtnEl = document.querySelector("#back-btn");
 var clearBtnEl = document.querySelector("#clear-btn");
 var styleEl = document.querySelector(".style");
+userInitialEl = document.querySelector("#user-initial");
+scoresLinkEl = document.querySelector("#scores-link");
 
 
 var score = 0;
@@ -98,9 +101,14 @@ function alertTimerC() {
 function incorrectAnswer() {
     alertTimerI();
     var penaltyTime = 15;
-    secondsLeft -= penaltyTime;
+    if (secondsLeft>15) {
+        secondsLeft -= penaltyTime;
+    }else {
+        endOfQuiz();
+    }
+    
     nextQuestion();
-    updateTimer();
+    timerEl.innerText = `${secondsLeft} seconds left`;
 }
 
 function alertTimerI() {
@@ -109,11 +117,6 @@ function alertTimerI() {
     setTimeout(function() {
         alertEl.setAttribute("style", "display: none;");
       }, 1000);
-}
-
-function updateTimer() {
-    var timerDisplay = document.getElementById("timer");
-    timerDisplay.innerText = `${secondsLeft} seconds left`;
 }
 
 function firstQ(){
@@ -135,6 +138,8 @@ function endOfQuiz() {
     buttonEl.setAttribute("style", "display: none;");
     doneEl.setAttribute("style", "display: inline-block;");
     scoreEl.textContent= `Your final score is: ${score}.`;
+    timerEl.innerText = `0 seconds left`;
+    secondsLeft= 0;
 }
 
 function saveResult(userInitial,userScore) {
@@ -143,18 +148,18 @@ function saveResult(userInitial,userScore) {
     existingValues.sort((a, b) => b.userScore - a.userScore);
     console.log(existingValues);
     localStorage.setItem('allScores', JSON.stringify(existingValues));
-
 }
 
 function fiveHighScores(userInitial,userScore){
+    clearHighScoresPage();
     var fiveLastHighScores = JSON.parse(localStorage.getItem('highScores')) || [];
     fiveLastHighScores.push({userInitial,userScore});
     fiveLastHighScores.sort((a, b) => b.userScore - a.userScore);
     if (fiveLastHighScores.length>5) {
     var slicedHigh= fiveLastHighScores.slice(0 , 5);
-
     localStorage.setItem('highScores', JSON.stringify(slicedHigh));
     console.log(slicedHigh);
+
 
     for (i=0; i<5; i++) {
         var liEl = document.createElement("li");
@@ -170,7 +175,6 @@ function fiveHighScores(userInitial,userScore){
             addScoreEl.appendChild(liEl);
         }
     }
-   
 }
 
 function setTime() {
@@ -183,11 +187,16 @@ function setTime() {
         endOfQuiz();
         clearInterval(timerInterval);
       }
+      if (secondsLeft < 0) {
+        endOfQuiz();
+        secondsLeft = 0;
+        timerEl.innerText = `0 seconds left`;
+        clearInterval(timerInterval);
+      }
     }, 1000);
 }
 
-
-submitEl.addEventListener("click", function(event) {
+var submitScore = function(event) {
     event.preventDefault();
 
 
@@ -196,16 +205,19 @@ submitEl.addEventListener("click", function(event) {
         userInitial: document.querySelector("#user-initial").value,
         userScore: score
     }
-    
+
   
     if (quizResult.userInitial === "") {
       window.alert("Please enter initials before submit.");
+      submitScore();
     } else {
        saveResult(quizResult.userInitial,quizResult.userScore);
        fiveHighScores(quizResult.userInitial,quizResult.userScore);
     }
+    userInitialEl.value = "";
+    quizResult.userScore = 0;
     highScoresPage();
-});
+}
 
 function highScoresPage() {
     wrapperEl.setAttribute("style", "display: none;");
@@ -213,5 +225,28 @@ function highScoresPage() {
     styleEl.setAttribute("style", "display: block;");
 }
 
+function goBack() {
+    styleEl.setAttribute("style", "display: none;");
+    wrapperEl.setAttribute("style", "display: block;");
+    mainEl.setAttribute("style", "display: inline-block;");
+    num = 0;
+    score = 0;
+    secondsLeft = 75;
+    timerEl.textContent= `Timer`;
+}
+
+function clearHighScoresPage() {
+    var childNodes = addScoreEl.childNodes;
+
+    for (var i = childNodes.length - 1; i >= 0; i--) {
+        var childNode = childNodes[i];
+        addScoreEl.removeChild(childNode);
+    }
+}
 
 startEl.addEventListener("click",firstQ);
+submitEl.addEventListener("click",submitScore); 
+backBtnEl.addEventListener("click",goBack);
+scoresLinkEl.addEventListener("click", highScoresPage);
+clearBtnEl.addEventListener("click", clearHighScoresPage)
+
